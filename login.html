@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stackly Corporate Solutions — Sign In / Sign Up</title>
+  <meta name="description" content="Sign in or create your Stackly Corporate Solutions account.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+  <style>
+    /* ── Input icon & field vertical alignment fix ── */
+    .input-group {
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-gray-500);
+      margin-bottom: 7px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 13px 16px 13px 46px;
+      border: 2px solid var(--color-gray-200);
+      border-radius: 14px;
+      background: var(--color-white);
+      color: var(--color-black);
+      font-size: 0.92rem;
+      font-family: inherit;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+      height: 52px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    .input-group select {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    /* Icon perfectly centred inside the 52px tall field */
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      bottom: 0;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      color: var(--color-gray-500);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* ── Back to Home button ── */
+    .btn-back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-gray-500);
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1.5px solid var(--color-gray-200);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      margin-bottom: 1.25rem;
+      align-self: flex-start;
+    }
+
+    .btn-back-home:hover {
+      background: var(--color-gray-100);
+      border-color: var(--color-gray-300);
+      color: var(--color-black);
+    }
+
+    /* ── Forgot password link ── */
+    .forgot-link {
+      font-size: 0.83rem;
+      color: var(--color-primary);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+
+    /* ── Auth tabs styled pill switcher ── */
+    .auth-tabs {
+      display: flex !important;
+      background: var(--color-gray-100);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 9px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-gray-500);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      background: var(--color-white);
+      color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    }
+
+    .auth-tab:hover:not(.active) {
+      color: var(--color-black);
+    }
+
+    /* ── Auth form spacing ── */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .auth-panel {
+      display: none !important;
+    }
+
+    .auth-panel.active {
+      display: flex !important;
+      flex-direction: column;
+      gap: 1rem;
+      animation: sectionFade 0.3s ease;
+    }
+
+    /* ── Auth card width ── */
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* ── Left panel corporate feature cards ── */
+    .slogan-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      margin-top: 1.5rem;
+      width: 100%;
+    }
+
+    .slogan-card {
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      color: rgba(255, 255, 255, 0.92);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .slogan-card .sc-icon {
+      font-size: 1.4rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .slogan-card h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0 0 3px;
+      color: #fff;
+    }
+
+    .slogan-card p {
+      font-size: 0.8rem;
+      margin: 0;
+      opacity: 0.78;
+      line-height: 1.5;
+    }
+
+    .auth-left-headline {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      margin: 0.75rem 0 0.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-left-headline span {
+      background: linear-gradient(135deg, #A855F7 0%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-left-sub {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.65;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-pills {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-pill i {
+      color: #A855F7;
+      font-size: 0.75rem;
+    }
+
+    /* Override left panel background for corporate theme */
+    .auth-left {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0A0A1A 100%) !important;
+    }
+
+    .auth-left::before {
+      background: none !important;
+      opacity: 0 !important;
+    }
+
+    /* Corporate geometric shapes instead of blobs */
+    .auth-left-overlay {
+      background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(168,85,247,0.12) 50%, rgba(6,182,212,0.10) 100%) !important;
+    }
+
+    .shape-blob.sb-1 { background: #6366F1 !important; }
+    .shape-blob.sb-2 { background: #A855F7 !important; }
+    .shape-blob.sb-3 { background: #06B6D4 !important; }
+
+    /* Brand logo larger on left panel */
+    .auth-left-brand .stackly-logo img,
+    .auth-left-brand .stackly-logo svg {
+      height: 44px !important;
+    }
+
+    /* Primary color override to corporate indigo/purple */
+    :root {
+      --color-primary: #6366F1;
+      --color-primary-dark: #4F46E5;
+      --shadow-glow: 0 8px 30px rgba(99, 102, 241, 0.35);
+      --gradient-main: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+    }
+
+    /* dark-mode mobile card text override */
+    [data-theme="dark"] .auth-card label {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Logo in card — use SVG directly */
+    .auth-logo-svg {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .auth-logo-svg svg {
+      height: 40px;
+      width: auto;
+      color: var(--color-black);
+    }
+
+    /* Left panel logo */
+    .auth-left-brand-svg svg {
+      height: 44px;
+      width: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-page">
+
+    <!-- ═══ LEFT PANEL ═══ -->
+    <aside class="auth-left">
+      <div class="auth-left-overlay"></div>
+      <div class="shape-blob sb-1"></div>
+      <div class="shape-blob sb-2"></div>
+      <div class="shape-blob sb-3"></div>
+      <div class="auth-left-content">
+        <div class="auth-left-brand" data-aos="fade-right" data-aos-delay="100">
+          <a href="login.html" aria-label="Stackly Corporate Solutions">
+            <img src="assets/images/stackly-logo-main.webp" alt="Stackly Corporate Solutions" style="height:52px;width:auto;">
+          </a>
+        </div>
+
+        <h1 class="auth-left-headline" data-aos="fade-right" data-aos-delay="200">
+          Enterprise Solutions<br>Built for <span>Modern Teams</span>
+        </h1>
+        <p class="auth-left-sub" data-aos="fade-right" data-aos-delay="300">
+          Streamline operations, empower your workforce, and make data-driven decisions — all from one unified platform.
+        </p>
+
+        <div class="stat-pills" data-aos="fade-right" data-aos-delay="400">
+          <span class="stat-pill"><i class="fas fa-building"></i> 2,000+ Enterprises</span>
+          <span class="stat-pill"><i class="fas fa-star"></i> 4.9 / 5 Rating</span>
+          <span class="stat-pill"><i class="fas fa-shield-alt"></i> SOC 2 Certified</span>
+        </div>
+
+        <div class="slogan-cards">
+          <div class="slogan-card" data-aos="fade-right" data-aos-delay="500">
+            <span class="sc-icon"><i class="fas fa-chart-line"></i></span>
+            <div>
+              <h4>"Smarter Decisions, Faster Growth"</h4>
+              <p>Real-time analytics, KPI dashboards &amp; executive reporting — all in one place.</p>
+            </div>
+          </div>
+          <div class="slogan-card" data-aos="fade-right" data-aos-delay="600">
+            <span class="sc-icon"><i class="fas fa-users-cog"></i></span>
+            <div>
+              <h4>"Collaborate Without Limits"</h4>
+              <p>Unified workflows, role-based access &amp; team management across every department.</p>
+            </div>
+          </div>
+          <div class="slogan-card" data-aos="fade-right" data-aos-delay="700">
+            <span class="sc-icon"><i class="fas fa-lock"></i></span>
+            <div>
+              <h4>"Enterprise-Grade Security"</h4>
+              <p>End-to-end encryption, audit logs &amp; compliance tools built into every layer.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══ RIGHT PANEL ═══ -->
+    <main class="auth-right">
+      <div class="auth-card" data-aos="fade-left" data-aos-delay="300">
+
+        <!-- Back to Home -->
+        <a href="404.html" class="btn-back-home">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+
+        <!-- Logo inside card -->
+        <div class="auth-card-header">
+          <a href="login.html" class="auth-logo" aria-label="Stackly Corporate Solutions">
+            <img src="assets/images/stackly-logo-main.webp" alt="Stackly Corporate Solutions" style="height:44px;width:auto;margin-bottom:1rem;">
+          </a>
+
+          <!-- Tab switcher -->
+          <div class="auth-tabs">
+            <button type="button" class="auth-tab active" data-tab="signin" id="tabSignin">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+            <button type="button" class="auth-tab" data-tab="signup" id="tabSignup">
+              <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="form-alert error" id="authAlert"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        <div class="form-alert success" id="authSuccess"><i class="fas fa-check-circle"></i><span></span></div>
+
+        <!-- ══ SIGN IN ══ -->
+        <form class="auth-form auth-panel active" id="signinForm" data-panel="signin" novalidate>
+
+          <!-- Role -->
+          <div class="input-group">
+            <label for="signinRole">Select Role</label>
+            <i class="fas fa-user-tag input-icon"></i>
+            <select id="signinRole" name="role">
+              <option value="">Choose role</option>
+              <option value="admin">Admin</option>
+              <option value="customer">Employee</option>
+            </select>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="signinEmail">Work Email Address</label>
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="signinEmail" placeholder="e.g. name@company.com" autocomplete="email">
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label for="signinPassword">Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="signinPassword" placeholder="Enter your password"
+              autocomplete="current-password">
+          </div>
+
+          <!-- Remember + Forgot -->
+          <div class="form-row" style="justify-content:space-between; align-items:center;">
+            <label class="checkbox-group">
+              <input type="checkbox" id="remember">
+              Remember Me
+            </label>
+            <a href="404.html" class="forgot-link">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-ripple">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </button>
+          <p class="auth-toggle-text">
+            Don't have an account? <a href="#signup" class="auth-toggle-btn" data-target="signup">Sign Up</a>
+          </p>
+        </form>
+
+        <!-- ══ SIGN UP ══ -->
+        <form class="auth-form auth-panel" id="signupForm" data-panel="signup" novalidate>
+
+          <!-- Full Name -->
+          <div class="input-group">
+            <label for="signupName">Full Name</label>
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="signupName" placeholder="Your full name" autocomplete="name">
+          </div>
+
+          <!-- Role -->
+          <div class="input-group">
+            <label for="signupRole">Select Role</label>
+            <i class="fas fa-user-tag input-icon"></i>
+            <select id="signupRole" name="role">
+              <option value="">Choose role</option>
+              <option value="admin">Admin</option>
+              <option value="customer">Employee</option>
+            </select>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="signupEmail">Work Email Address</label>
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="signupEmail" placeholder="e.g. name@company.com" autocomplete="email">
+          </div>
+
+          <!-- Department (replaces Phone) -->
+          <div class="input-group">
+            <label for="signupDept">Department <span style="font-weight:400;opacity:.7">(optional)</span></label>
+            <i class="fas fa-briefcase input-icon"></i>
+            <input type="text" id="signupDept" placeholder="e.g. Finance, HR, Engineering">
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label for="signupPassword">Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="signupPassword" placeholder="Create a password" autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-ripple">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+          <p class="auth-toggle-text">
+            Already have an account? <a href="#signin" class="auth-toggle-btn" data-target="signin">Sign In</a>
+
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const alertEl = document.getElementById('authAlert');
+      const successEl = document.getElementById('authSuccess');
+      const tabs = document.querySelectorAll('.auth-tab');
+      const panels = document.querySelectorAll('.auth-panel');
+
+      const hideAlerts = () => {
+        alertEl.classList.remove('show');
+        successEl.classList.remove('show');
+      };
+      const showError = (msg) => {
+        hideAlerts();
+        alertEl.querySelector('span').textContent = msg;
+        alertEl.classList.add('show');
+      };
+      const switchTab = (tabName) => {
+        hideAlerts();
+        tabs.forEach((t) => t.classList.toggle('active', t.dataset.tab === tabName));
+        panels.forEach((p) => p.classList.toggle('active', p.dataset.panel === tabName));
+      };
+
+      tabs.forEach((tab) => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+      document.querySelectorAll('.auth-toggle-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => { e.preventDefault(); switchTab(btn.dataset.target); });
+      });
+
+      if (window.location.hash === '#signup' || new URLSearchParams(window.location.search).get('mode') === 'signup') {
+        switchTab('signup');
+      }
+
+      const remembered = Auth.getRemembered?.();
+      if (remembered) {
+        document.getElementById('signinEmail').value = remembered.email;
+        document.getElementById('signinRole').value = remembered.role;
+        document.getElementById('remember').checked = true;
+      }
+
+      document.getElementById('signinForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlerts();
+        const role = document.getElementById('signinRole').value;
+        const email = document.getElementById('signinEmail').value;
+        const password = document.getElementById('signinPassword').value;
+        const remember = document.getElementById('remember').checked;
+        const result = Auth.login({ role, email, password, remember });
+        if (!result.success) { showError(result.errors.join(' ')); return; }
+        Auth.redirectToDashboard(role);
+      });
+
+      document.getElementById('signupForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlerts();
+        const data = {
+          fullName: document.getElementById('signupName').value,
+          role: document.getElementById('signupRole').value,
+          email: document.getElementById('signupEmail').value,
+          phone: document.getElementById('signupDept').value,
+          password: document.getElementById('signupPassword').value
+        };
+        const result = Auth.signup(data);
+        if (!result.success) { showError(result.errors.join(' ')); return; }
+
+        hideAlerts();
+        successEl.querySelector('span').textContent = 'Account created successfully! Please sign in.';
+        successEl.classList.add('show');
+        document.getElementById('signupForm').reset();
+
+        setTimeout(() => {
+          switchTab('signin');
+          document.getElementById('signinEmail').value = data.email;
+          document.getElementById('signinRole').value = data.role;
+        }, 1200);
+      });
+    });
+  </script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: false,
+      mirror: true,
+      duration: 800,
+      easing: 'ease-out-cubic'
+    });
+  </script>
+</body>
+
+</html>
